@@ -207,7 +207,7 @@ impl BitArray {
     /// The atom value at the specified index.
     #[must_use]
     pub fn atom_from_index(&self, from_index: usize) -> BitArrayAtom {
-        let mut result:u64 = 0;
+        let mut result: u64 = 0;
 
         for i in 0..BIT_ARRAY_BITS_IN_ATOM {
             let index = from_index + (BIT_ARRAY_BITS_IN_ATOM - 1) - i;

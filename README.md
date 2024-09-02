@@ -8,7 +8,7 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-bit-array-rs = "0.0.2"
+bit-array-rs = "0.0.3"
 ```
 
 ## Usage
