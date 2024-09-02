@@ -5,8 +5,8 @@
 use std::ops::Index;
 use std::vec::Vec;
 
-type BitArrayAtom = u32;
-const BIT_ARRAY_BITS_IN_ATOM: usize = 32;
+type BitArrayAtom = u64;
+const BIT_ARRAY_BITS_IN_ATOM: usize = 64;
 
 #[derive(Clone)]
 pub struct BitArray {
@@ -62,7 +62,7 @@ impl BitArray {
     #[must_use]
     pub fn first_unset_bit(&self) -> Option<usize> {
         for (i, &atom) in self.array.iter().enumerate() {
-            if atom != u32::MAX {
+            if atom != u64::MAX {
                 return (0..BIT_ARRAY_BITS_IN_ATOM).find_map(|bit| {
                     if atom & (1 << bit) == 0 {
                         Some(i * BIT_ARRAY_BITS_IN_ATOM + bit)
@@ -207,13 +207,13 @@ impl BitArray {
     /// The atom value at the specified index.
     #[must_use]
     pub fn atom_from_index(&self, from_index: usize) -> BitArrayAtom {
-        let mut result = 0;
+        let mut result:u64 = 0;
 
         for i in 0..BIT_ARRAY_BITS_IN_ATOM {
             let index = from_index + (BIT_ARRAY_BITS_IN_ATOM - 1) - i;
             result <<= 1;
             if index < self.bit_count {
-                result |= u32::from(self.get(index));
+                result |= u64::from(self.get(index));
             }
         }
 
