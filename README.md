@@ -1,6 +1,6 @@
 # BitArray - A Simple Bit Array Implementation in Rust
 
-`bit_array_rs` is a Rust library that provides a simple and efficient implementation of a bit array. A bit array (or bit vector) is a data structure that compactly stores bits (0s and 1s).
+`bit-array-rs` is a Rust library that provides a simple and efficient implementation of a bit array. A bit array (or bit vector) is a data structure that compactly stores bits (0s and 1s).
 
 ## Installation
 
