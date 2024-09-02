@@ -13,17 +13,17 @@ fn basic_bit_array_functions() {
     assert_eq!(array.first_unset_bit().unwrap(), 0);
     assert_eq!(array.first_set_bit().unwrap(), 4);
     assert_eq!(array.bit_count(), 10);
-    assert_eq!(array[1], false);
-    assert_eq!(array[0], false);
-    assert_eq!(array[4], true);
+    assert!(!array[1]);
+    assert!(!array[0]);
+    assert!(array[4]);
     array.unset(4);
     assert_eq!(array.first_set_bit(), None);
-    assert_eq!(array[4], false);
+    assert!(!array[4]);
     array.set_bit(9, true);
-    assert_eq!(array[9], true);
-    assert_eq!(array.get(8), false);
-    assert_eq!(array.get(9), true);
-    assert_eq!(array.all_set(), false);
+    assert!(array[9]);
+    assert!(!array.get(8));
+    assert!(array.get(9));
+    assert!(!array.all_set());
 
     println!("{}", array);
     println!("{:?}", array);
