@@ -21,12 +21,16 @@ impl BitArray {
     /// # Arguments
     ///
     /// * `bit_count` - The maximum number of bits in the array.
+    /// # Panics
+    ///
+    /// This function will panic if `bit_count` is zero.
+    #[must_use]
     pub fn new(bit_count: usize) -> Self {
         assert_ne!(bit_count, 0, "bit_count must be greater than zero");
         let atom_count = bit_count.div_ceil(BIT_ARRAY_BITS_IN_ATOM);
         let array = vec![0; atom_count];
 
-        BitArray {
+        Self {
             array,
             bit_count,
             number_of_bits_set: 0,
@@ -45,7 +49,8 @@ impl BitArray {
     ///
     /// * `true` if all bits in the array are set, otherwise `false`.
     #[inline]
-    pub fn all_set(&self) -> bool {
+    #[must_use]
+    pub const fn all_set(&self) -> bool {
         self.bit_count == self.number_of_bits_set
     }
 
@@ -54,9 +59,10 @@ impl BitArray {
     /// # Returns
     ///
     /// * The index of the first unset bit, or `None` if all bits are set.
+    #[must_use]
     pub fn first_unset_bit(&self) -> Option<usize> {
         for (i, &atom) in self.array.iter().enumerate() {
-            if atom != 0xffffffff {
+            if atom != u32::MAX {
                 return (0..BIT_ARRAY_BITS_IN_ATOM).find_map(|bit| {
                     if atom & (1 << bit) == 0 {
                         Some(i * BIT_ARRAY_BITS_IN_ATOM + bit)
@@ -74,6 +80,7 @@ impl BitArray {
     /// # Returns
     ///
     /// * The index of the first set bit, or `None` if no bits are set.
+    #[must_use]
     pub fn first_set_bit(&self) -> Option<usize> {
         for (i, &atom) in self.array.iter().enumerate() {
             if atom != 0 {
@@ -95,7 +102,8 @@ impl BitArray {
     ///
     /// The number of bits that are set in the `BitArray`.
     #[inline]
-    pub fn count_set_bits(&self) -> usize {
+    #[must_use]
+    pub const fn count_set_bits(&self) -> usize {
         self.number_of_bits_set
     }
 
@@ -105,7 +113,8 @@ impl BitArray {
     ///
     /// The total number of bits in the `BitArray`.
     #[inline]
-    pub fn bit_count(&self) -> usize {
+    #[must_use]
+    pub const fn bit_count(&self) -> usize {
         self.bit_count
     }
 
@@ -196,6 +205,7 @@ impl BitArray {
     /// # Returns
     ///
     /// The atom value at the specified index.
+    #[must_use]
     pub fn atom_from_index(&self, from_index: usize) -> BitArrayAtom {
         let mut result = 0;
 
@@ -203,7 +213,7 @@ impl BitArray {
             let index = from_index + (BIT_ARRAY_BITS_IN_ATOM - 1) - i;
             result <<= 1;
             if index < self.bit_count {
-                result |= self.get(index) as u32;
+                result |= u32::from(self.get(index));
             }
         }
 
@@ -223,13 +233,14 @@ impl BitArray {
     /// # Panics
     ///
     /// This function will panic if the index is out of bounds.
+    #[must_use]
     pub fn get(&self, index: usize) -> bool {
         assert!(index < self.bit_count, "Index out of bounds");
 
         let array_index = index / BIT_ARRAY_BITS_IN_ATOM;
         let bit_index = index % BIT_ARRAY_BITS_IN_ATOM;
 
-        (self.array[array_index] >> bit_index) & 0x1 != 0
+        ((self.array[array_index] >> bit_index) & 0x1) != 0
     }
 }
 
@@ -296,7 +307,7 @@ impl std::fmt::Debug for BitArray {
             if i > 0 && i % 8 == 0 {
                 write!(f, " ")?;
             }
-            write!(f, "{}", self.get(i) as u8)?;
+            write!(f, "{}", u8::from(self.get(i)))?;
         }
         Ok(())
     }
@@ -327,7 +338,7 @@ impl std::fmt::Display for BitArray {
     /// ```
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for i in 0..self.bit_count {
-            write!(f, "{}", self.get(i) as u8)?;
+            write!(f, "{}", u8::from(self.get(i)))?;
         }
         Ok(())
     }
