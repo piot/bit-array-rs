@@ -1,0 +1,18 @@
+on: [push]
+
+name: Rust Build
+
+jobs:
+  build_and_test:
+    name: Build and run tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup install stable
+      - if: runner.os == 'Linux'
+        run: sudo apt install librust-alsa-sys-dev libudev-dev libwayland-dev # needed for audio
+      # -W clippy::pedantic -W clippy::restriction -W clippy::nursery -A clippy::implicit_return -A clippy::single_call_fn -A clippy::single_call_fn -A clippy::missing_docs_in_private_items -A clippy::default_trait_access -A clippy::module_name_repetitions -A clippy::arithmetic_side_effects -A clippy::missing_trait_methods -A clippy::float_arithmetic -A clippy::needless_raw_strings -A clippy::indexing_slicing -A clippy::as_conversions -A clippy::cast_possible_truncation -A clippy::cast_sign_loss -A clippy::cast_possible_wrap
+      - run: RUSTFLAGS="-D warnings" cargo clippy --color=always --
+      - run: RUSTFLAGS="-D warnings" cargo build --color=always --all-features
+      - run: cargo test --color=always -- --color=always # --verbose -- --nocapture
+      - run: cargo fmt -- --check
