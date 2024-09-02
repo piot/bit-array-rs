@@ -2,5 +2,10 @@
 name = "bit-array-rs"
 version = "0.0.1"
 edition = "2021"
+license = "MIT"
+description = "Bit Array"
+repository = "https://github.com/piot/bit-array-rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
